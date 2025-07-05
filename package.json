@@ -1,0 +1,30 @@
+{
+  "name": "3d-model-viewer",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.160.0",
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/drei": "^9.90.0"
+  },
+  "scripts": {
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "react-scripts build"
+  },
+  "devDependencies": {
+    "react-scripts": "5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
