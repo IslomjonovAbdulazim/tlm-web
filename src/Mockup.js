@@ -12,7 +12,7 @@ const Mockup = () => {
     {
       id: 'marble2', 
       name: 'Marble Modern',
-      image: '/assets/marble-floor-2.png'
+      image: '/assets/marble-floor-.jpeg'  // Fixed: was marble-floor-2.png
     },
     {
       id: 'marble3',
@@ -22,7 +22,7 @@ const Mockup = () => {
     {
       id: 'special',
       name: 'Special Pattern',
-      image: '/assets/awfgazdgh.png'
+      image: '/assets/awfgazdg.jpeg'  // Fixed: was awfgazdgh.png
     }
   ];
 
