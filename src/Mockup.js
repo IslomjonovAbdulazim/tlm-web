@@ -12,7 +12,7 @@ const Mockup = () => {
     {
       id: 'marble2', 
       name: 'Marble Modern',
-      image: '/assets/marble-floor-.jpeg'  // Fixed: was marble-floor-2.png
+      image: '/assets/marble-floor-.jpeg'
     },
     {
       id: 'marble3',
@@ -22,7 +22,7 @@ const Mockup = () => {
     {
       id: 'special',
       name: 'Special Pattern',
-      image: '/assets/awfgazdg.jpeg'  // Fixed: was awfgazdgh.png
+      image: '/assets/awfgazdg.jpeg'
     }
   ];
 
@@ -42,69 +42,94 @@ const Mockup = () => {
     transformStyle: 'preserve-3d'
   };
 
-  // Back Wall  
-  const backWallStyle = {
+  // Base wall style for transparent walls
+  const baseWallStyle = {
     position: 'absolute',
     width: '300px',
-    height: '200px',
+    height: '300px',
     background: 'rgba(230, 230, 230, 0.4)',
     border: '2px solid rgba(255,255,255,0.6)',
-    transform: 'translateZ(-150px) translateY(-100px)',
     transformOrigin: 'center top',
     bottom: '0px'
   };
 
-  // Left Side Wall (full wall)
-  const leftDoorFrameStyle = {
+  // Back Wall with steel base
+  const backWallStyle = {
+    ...baseWallStyle,
+    transform: 'translateZ(-150px) translateY(-150px)',
+    background: 'rgba(200, 200, 200, 0.8)'
+  };
+
+  // Steel side panels for back wall
+  const backSteelPanelStyle = {
     position: 'absolute',
-    width: '300px', // Full depth  
-    height: '200px',
-    background: 'rgba(220, 220, 220, 0.4)',
-    border: '2px solid rgba(255,255,255,0.6)',
-    transform: 'rotateY(-90deg) translateZ(150px) translateY(-100px)',
-    transformOrigin: 'center top',
-    bottom: '0px'
+    width: '54px', // 18% of 300px
+    height: '300px',
+    backgroundImage: 'url(/assets/side.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
   };
 
-  // Right Side Wall (full wall)
-  const rightDoorFrameStyle = {
+  // Mirror panel style for back wall (6 mirrors in 3x2 grid)
+  const mirrorPanelStyle = {
     position: 'absolute',
-    width: '300px', // Full depth
-    height: '200px', 
-    background: 'rgba(220, 220, 220, 0.4)',
-    border: '2px solid rgba(255,255,255,0.6)',
-    transform: 'rotateY(90deg) translateZ(150px) translateY(-100px)',
-    transformOrigin: 'center top',
-    bottom: '0px'
+    width: '64px', // 192px / 3 = 64px each
+    height: '150px', // 300px / 2 = 150px each
+    backgroundImage: 'url(/assets/mirror.jpeg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    border: '1px solid rgba(255,255,255,0.3)'
   };
 
-  // Front Left Door Frame (20% of front)
+  // Left Side Wall - transparent
+  const leftWallStyle = {
+    ...baseWallStyle,
+    width: '300px',
+    transform: 'rotateY(-90deg) translateZ(150px) translateY(-150px)'
+  };
+
+  // Right Side Wall with steel base
+  const rightWallStyle = {
+    ...baseWallStyle,
+    width: '300px',
+    transform: 'rotateY(90deg) translateZ(150px) translateY(-150px)',
+    background: 'rgba(200, 200, 200, 0.8)',
+    backgroundImage: 'url(/assets/side.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
+  };
+
+  // Steel panel elements for right wall
+  const rightSteelPanelStyle = {
+    position: 'absolute',
+    width: '100%',
+    height: '100%', // Full height - stretched
+    backgroundImage: 'url(/assets/side.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    border: '1px solid rgba(255,255,255,0.2)'
+  };
+
+  // Front Left Door Frame - transparent
   const frontLeftDoorFrameStyle = {
-    position: 'absolute',
-    width: '60px', // 20% of 300px
-    height: '200px',
-    background: 'rgba(210, 210, 210, 0.4)',
-    border: '2px solid rgba(255,255,255,0.6)',
-    transform: 'translateZ(150px) translateY(-100px)',
-    transformOrigin: 'center top',
-    left: '0px',
-    bottom: '0px'
+    ...baseWallStyle,
+    width: '60px',
+    transform: 'translateZ(150px) translateY(-150px)',
+    left: '0px'
   };
 
-  // Front Right Door Frame (20% of front)
+  // Front Right Door Frame - transparent
   const frontRightDoorFrameStyle = {
-    position: 'absolute',
-    width: '60px', // 20% of 300px
-    height: '200px',
-    background: 'rgba(210, 210, 210, 0.4)',
-    border: '2px solid rgba(255,255,255,0.6)',
-    transform: 'translateZ(150px) translateY(-100px)',
-    transformOrigin: 'center top',
-    right: '0px',
-    bottom: '0px'
+    ...baseWallStyle,
+    width: '60px',
+    transform: 'translateZ(150px) translateY(-150px)',
+    right: '0px'
   };
 
-  // Floor - Fixed to be at bottom of walls
+  // Floor
   const floorStyle = {
     position: 'absolute',
     width: '300px',
@@ -113,12 +138,23 @@ const Mockup = () => {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    transform: 'rotateX(-90deg) translateZ(52px)',
+    transform: 'rotateX(-90deg) translateZ(0px)',
     transformOrigin: 'center center',
     border: '2px solid rgba(255,255,255,0.9)',
     boxShadow: '0 0 30px rgba(0,0,0,0.3)',
     borderRadius: '0px',
     bottom: '0px'
+  };
+
+  // Steel panel style for right wall
+  const steelPanelStyle = {
+    position: 'absolute',
+    width: '100%',
+    height: '100px', // 300px / 3 = 100px for 3 panels
+    backgroundImage: 'url(/assets/side.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
   };
 
   const selectorStyle = {
@@ -183,21 +219,42 @@ const Mockup = () => {
         Lift Floor Customizer
       </h2>
       
-      {/* Elevator with Door Frame - Back wall + side walls + front door frames + floor */}
+      {/* Elevator Structure */}
       <div style={liftStyle}>
         <div style={liftBoxStyle}>
-          {/* Back Wall */}
-          <div style={backWallStyle}></div>
+          {/* Back Wall with steel sides and 6 mirrors */}
+          <div style={backWallStyle}>
+            {/* Left steel panel */}
+            <div style={{...backSteelPanelStyle, left: '0px'}}></div>
+            
+            {/* Right steel panel */}
+            <div style={{...backSteelPanelStyle, right: '0px'}}></div>
+            
+            {/* 6 mirrors in 3x2 grid */}
+            {/* Top row */}
+            <div style={{...mirrorPanelStyle, top: '0px', left: '54px'}}></div>
+            <div style={{...mirrorPanelStyle, top: '0px', left: '118px'}}></div>
+            <div style={{...mirrorPanelStyle, top: '0px', left: '182px'}}></div>
+            
+            {/* Bottom row */}
+            <div style={{...mirrorPanelStyle, top: '150px', left: '54px'}}></div>
+            <div style={{...mirrorPanelStyle, top: '150px', left: '118px'}}></div>
+            <div style={{...mirrorPanelStyle, top: '150px', left: '182px'}}></div>
+          </div>
           
-          {/* Side Walls - full walls */}
-          <div style={leftDoorFrameStyle}></div>
-          <div style={rightDoorFrameStyle}></div>
+          {/* Left Side Wall - transparent */}
+          <div style={leftWallStyle}></div>
           
-          {/* Front Door Frames - 20% left + 20% right, 60% open door in center */}
+          {/* Right Side Wall with steel base and 1 stretched panel */}
+          <div style={rightWallStyle}>
+            <div style={{...rightSteelPanelStyle, top: '0px'}}></div>
+          </div>
+          
+          {/* Front Door Frames - transparent */}
           <div style={frontLeftDoorFrameStyle}></div>
           <div style={frontRightDoorFrameStyle}></div>
           
-          {/* Floor - Main focus */}
+          {/* Floor */}
           <div style={floorStyle}></div>
         </div>
       </div>
