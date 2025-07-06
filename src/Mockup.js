@@ -235,4 +235,5 @@ const Mockup = () => {
   );
 };
 
+
 export default Mockup;
