@@ -95,22 +95,30 @@ const Mockup = () => {
     ...baseWallStyle,
     width: '300px',
     transform: 'rotateY(90deg) translateZ(150px) translateY(-150px)',
-    background: 'rgba(200, 200, 200, 0.8)',
-    backgroundImage: 'url(/assets/side.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center'
+    background: 'rgba(200, 200, 200, 0.8)'
   };
 
-  // Steel panel elements for right wall
+  // Steel panels for right wall (left and right sides)
   const rightSteelPanelStyle = {
     position: 'absolute',
-    width: '100%',
-    height: '100%', // Full height - stretched
+    width: '54px', // 18% of 300px
+    height: '300px',
     backgroundImage: 'url(/assets/side.jpg)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  };
+
+  // Mirror panel style for right wall (6 mirrors in 3x2 grid)
+  const rightMirrorPanelStyle = {
+    position: 'absolute',
+    width: '64px', // 192px / 3 = 64px each
+    height: '150px', // 300px / 2 = 150px each
+    backgroundImage: 'url(/assets/mirror.jpeg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    border: '1px solid rgba(255,255,255,0.2)'
+    border: '1px solid rgba(255,255,255,0.3)'
   };
 
   // Front Left Door Frame - transparent
@@ -245,9 +253,24 @@ const Mockup = () => {
           {/* Left Side Wall - transparent */}
           <div style={leftWallStyle}></div>
           
-          {/* Right Side Wall with steel base and 1 stretched panel */}
+          {/* Right Side Wall with steel left/right and 6 mirrors */}
           <div style={rightWallStyle}>
-            <div style={{...rightSteelPanelStyle, top: '0px'}}></div>
+            {/* Left steel panel */}
+            <div style={{...rightSteelPanelStyle, left: '0px'}}></div>
+            
+            {/* Right steel panel */}
+            <div style={{...rightSteelPanelStyle, right: '0px'}}></div>
+            
+            {/* 6 mirrors in 3x2 grid */}
+            {/* Top row */}
+            <div style={{...rightMirrorPanelStyle, top: '0px', left: '54px'}}></div>
+            <div style={{...rightMirrorPanelStyle, top: '0px', left: '118px'}}></div>
+            <div style={{...rightMirrorPanelStyle, top: '0px', left: '182px'}}></div>
+            
+            {/* Bottom row */}
+            <div style={{...rightMirrorPanelStyle, top: '150px', left: '54px'}}></div>
+            <div style={{...rightMirrorPanelStyle, top: '150px', left: '118px'}}></div>
+            <div style={{...rightMirrorPanelStyle, top: '150px', left: '182px'}}></div>
           </div>
           
           {/* Front Door Frames - transparent */}

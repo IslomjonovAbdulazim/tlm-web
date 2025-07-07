@@ -1,318 +1,193 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
+import { Canvas, useLoader } from '@react-three/fiber';
+import { OrbitControls, Box, Plane } from '@react-three/drei';
+import * as THREE from 'three';
 
-const Mockup = () => {
-  const [selectedFloor, setSelectedFloor] = useState('/assets/marble-floor-2.jpg');
+// Lift Interior Component
+function LiftInterior() {
+  const liftRef = useRef();
   
-  const floorOptions = [
-    {
-      id: 'marble1',
-      name: 'Marble Classic',
-      image: '/assets/marble-floor-2.jpg'
-    },
-    {
-      id: 'marble2', 
-      name: 'Marble Modern',
-      image: '/assets/marble-floor-.jpeg'
-    },
-    {
-      id: 'marble3',
-      name: 'Marble Luxury', 
-      image: '/assets/marblefloor3.jpg'
-    },
-    {
-      id: 'special',
-      name: 'Special Pattern',
-      image: '/assets/awfgazdg.jpeg'
-    }
-  ];
+  // Load textures
+  const floorTexture = useLoader(THREE.TextureLoader, '/assets/floor/awfgazdg.jpeg');
+  const mirrorTexture = useLoader(THREE.TextureLoader, '/assets/mirror/mirror-2.jpg');
+  const sideTexture = useLoader(THREE.TextureLoader, '/assets/side/side-1.jpg');
+  
+  // Configure texture properties
+  floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+  floorTexture.repeat.set(1, 1);
+  
+  mirrorTexture.wrapS = mirrorTexture.wrapT = THREE.RepeatWrapping;
+  mirrorTexture.repeat.set(1, 1);
+  
+  sideTexture.wrapS = sideTexture.wrapT = THREE.RepeatWrapping;
+  sideTexture.repeat.set(1, 1);
 
-  const liftStyle = {
-    width: '350px',
-    height: '350px',
-    margin: '20px auto',
-    position: 'relative',
-    transform: 'perspective(1200px) rotateX(-35deg) rotateY(15deg)',
-    transformStyle: 'preserve-3d'
-  };
+  // Create materials
+  const floorMaterial = new THREE.MeshStandardMaterial({
+    map: floorTexture,
+    roughness: 0.3,
+  });
 
-  const liftBoxStyle = {
-    width: '300px',
-    height: '300px',
-    position: 'relative',
-    transformStyle: 'preserve-3d'
-  };
+  const mirrorMaterial = new THREE.MeshStandardMaterial({
+    map: mirrorTexture,
+    metalness: 0.8,
+    roughness: 0.1,
+  });
 
-  // Base wall style for transparent walls
-  const baseWallStyle = {
+  const sideMaterial = new THREE.MeshStandardMaterial({
+    map: sideTexture,
+    roughness: 0.4,
+  });
+
+  return (
+    <group ref={liftRef} position={[0, 0, 0]}>
+      {/* Floor */}
+      <Box args={[6, 0.1, 6]} position={[0, -2.95, 0]} material={floorMaterial} />
+
+      {/* Ceiling (same texture as floor) */}
+      <Box args={[6, 0.1, 6]} position={[0, 2.95, 0]} material={floorMaterial} />
+
+      {/* Back Wall */}
+      <group position={[0, 0, -3]}>
+        {/* Steel side panels */}
+        <Box args={[1, 6, 0.1]} position={[-2.5, 0, 0]} material={sideMaterial} />
+        <Box args={[1, 6, 0.1]} position={[2.5, 0, 0]} material={sideMaterial} />
+        
+        {/* Mirror panels in 3x2 grid */}
+        {[-1.5, -0.5, 0.5, 1.5].map((x, i) => 
+          [1, -1].map((y, j) => (
+            <Box 
+              key={`back-mirror-${i}-${j}`}
+              args={[0.9, 2.8, 0.05]} 
+              position={[x, y * 1.4, 0.05]} 
+              material={mirrorMaterial}
+            />
+          ))
+        )}
+      </group>
+
+      {/* Right Wall */}
+      <group position={[3, 0, 0]} rotation={[0, -Math.PI/2, 0]}>
+        {/* Steel side panels */}
+        <Box args={[1, 6, 0.1]} position={[-2.5, 0, 0]} material={sideMaterial} />
+        <Box args={[1, 6, 0.1]} position={[2.5, 0, 0]} material={sideMaterial} />
+        
+        {/* Mirror panels */}
+        {[-1.5, -0.5, 0.5, 1.5].map((x, i) => 
+          [1, -1].map((y, j) => (
+            <Box 
+              key={`right-mirror-${i}-${j}`}
+              args={[0.9, 2.8, 0.05]} 
+              position={[x, y * 1.4, 0.05]} 
+              material={mirrorMaterial}
+            />
+          ))
+        )}
+      </group>
+
+      {/* Left Wall */}
+      <group position={[-3, 0, 0]} rotation={[0, Math.PI/2, 0]}>
+        {/* Steel side panels */}
+        <Box args={[1, 6, 0.1]} position={[-2.5, 0, 0]} material={sideMaterial} />
+        <Box args={[1, 6, 0.1]} position={[2.5, 0, 0]} material={sideMaterial} />
+        
+        {/* Mirror panels */}
+        {[-1.5, -0.5, 0.5, 1.5].map((x, i) => 
+          [1, -1].map((y, j) => (
+            <Box 
+              key={`left-mirror-${i}-${j}`}
+              args={[0.9, 2.8, 0.05]} 
+              position={[x, y * 1.4, 0.05]} 
+              material={mirrorMaterial}
+            />
+          ))
+        )}
+      </group>
+
+      {/* Front Wall - Open (door opening) */}
+      <group position={[0, 0, 3]}>
+        {/* Only door frame side panels */}
+        <Box args={[1.2, 6, 0.1]} position={[-2.4, 0, 0]} material={sideMaterial} />
+        <Box args={[1.2, 6, 0.1]} position={[2.4, 0, 0]} material={sideMaterial} />
+        {/* Center is open for visibility */}
+      </group>
+    </group>
+  );
+}
+
+export default function App() {
+  const infoStyle = {
     position: 'absolute',
-    width: '300px',
-    height: '300px',
-    background: 'rgba(230, 230, 230, 0.4)',
-    border: '2px solid rgba(255,255,255,0.6)',
-    transformOrigin: 'center top',
-    bottom: '0px'
-  };
-
-  // Back Wall with steel base
-  const backWallStyle = {
-    ...baseWallStyle,
-    transform: 'translateZ(-150px) translateY(-150px)',
-    background: 'rgba(200, 200, 200, 0.8)'
-  };
-
-  // Steel side panels for back wall
-  const backSteelPanelStyle = {
-    position: 'absolute',
-    width: '54px', // 18% of 300px
-    height: '300px',
-    backgroundImage: 'url(/assets/side.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  };
-
-  // Mirror panel style for back wall (6 mirrors in 3x2 grid)
-  const mirrorPanelStyle = {
-    position: 'absolute',
-    width: '64px', // 192px / 3 = 64px each
-    height: '150px', // 300px / 2 = 150px each
-    backgroundImage: 'url(/assets/mirror.jpeg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    border: '1px solid rgba(255,255,255,0.3)'
-  };
-
-  // Left Side Wall - transparent
-  const leftWallStyle = {
-    ...baseWallStyle,
-    width: '300px',
-    transform: 'rotateY(-90deg) translateZ(150px) translateY(-150px)'
-  };
-
-  // Right Side Wall with steel base
-  const rightWallStyle = {
-    ...baseWallStyle,
-    width: '300px',
-    transform: 'rotateY(90deg) translateZ(150px) translateY(-150px)',
-    background: 'rgba(200, 200, 200, 0.8)'
-  };
-
-  // Steel panels for right wall (left and right sides)
-  const rightSteelPanelStyle = {
-    position: 'absolute',
-    width: '54px', // 18% of 300px
-    height: '300px',
-    backgroundImage: 'url(/assets/side.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  };
-
-  // Mirror panel style for right wall (6 mirrors in 3x2 grid)
-  const rightMirrorPanelStyle = {
-    position: 'absolute',
-    width: '64px', // 192px / 3 = 64px each
-    height: '150px', // 300px / 2 = 150px each
-    backgroundImage: 'url(/assets/mirror.jpeg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    border: '1px solid rgba(255,255,255,0.3)'
-  };
-
-  // Front Left Door Frame - transparent
-  const frontLeftDoorFrameStyle = {
-    ...baseWallStyle,
-    width: '60px',
-    transform: 'translateZ(150px) translateY(-150px)',
-    left: '0px'
-  };
-
-  // Front Right Door Frame - transparent
-  const frontRightDoorFrameStyle = {
-    ...baseWallStyle,
-    width: '60px',
-    transform: 'translateZ(150px) translateY(-150px)',
-    right: '0px'
-  };
-
-  // Floor
-  const floorStyle = {
-    position: 'absolute',
-    width: '300px',
-    height: '300px',
-    backgroundImage: `url(${selectedFloor})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    transform: 'rotateX(-90deg) translateZ(0px)',
-    transformOrigin: 'center center',
-    border: '2px solid rgba(255,255,255,0.9)',
-    boxShadow: '0 0 30px rgba(0,0,0,0.3)',
-    borderRadius: '0px',
-    bottom: '0px'
-  };
-
-  // Steel panel style for right wall
-  const steelPanelStyle = {
-    position: 'absolute',
-    width: '100%',
-    height: '100px', // 300px / 3 = 100px for 3 panels
-    backgroundImage: 'url(/assets/side.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  };
-
-  const selectorStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '15px',
-    marginTop: '30px',
-    flexWrap: 'wrap',
-    perspective: '1000px'
-  };
-
-  const optionStyle = {
-    padding: '10px 15px',
+    bottom: '30px',
+    left: '30px',
+    color: 'white',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    padding: '15px',
     borderRadius: '8px',
-    border: '2px solid rgba(255,255,255,0.3)',
-    background: 'rgba(255,255,255,0.9)',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    textAlign: 'center',
-    minWidth: '120px',
-    backdropFilter: 'blur(10px)',
-    boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+    fontSize: '14px',
+    fontFamily: 'monospace',
   };
 
-  const selectedOptionStyle = {
-    ...optionStyle,
-    border: '2px solid #007bff',
-    background: 'rgba(231, 243, 255, 0.95)',
-    transform: 'scale(1.05) translateY(-5px)',
-    boxShadow: '0 8px 25px rgba(0,123,255,0.3)'
-  };
-
-  const previewStyle = {
-    width: '40px',
-    height: '40px',
-    borderRadius: '4px',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    margin: '0 auto 8px',
-    border: '2px solid #eee'
+  const titleStyle = {
+    position: 'absolute',
+    top: '30px',
+    left: '30px',
+    color: 'white',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
   };
 
   return (
-    <div style={{ 
-      padding: '20px', 
-      fontFamily: 'Arial, sans-serif',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      minHeight: '100vh',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}>
-      <h2 style={{ 
-        textAlign: 'center', 
-        color: 'white',
-        marginBottom: '60px',
-        fontSize: '28px',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
-      }}>
-        Lift Floor Customizer
-      </h2>
-      
-      {/* Elevator Structure */}
-      <div style={liftStyle}>
-        <div style={liftBoxStyle}>
-          {/* Back Wall with steel sides and 6 mirrors */}
-          <div style={backWallStyle}>
-            {/* Left steel panel */}
-            <div style={{...backSteelPanelStyle, left: '0px'}}></div>
-            
-            {/* Right steel panel */}
-            <div style={{...backSteelPanelStyle, right: '0px'}}></div>
-            
-            {/* 6 mirrors in 3x2 grid */}
-            {/* Top row */}
-            <div style={{...mirrorPanelStyle, top: '0px', left: '54px'}}></div>
-            <div style={{...mirrorPanelStyle, top: '0px', left: '118px'}}></div>
-            <div style={{...mirrorPanelStyle, top: '0px', left: '182px'}}></div>
-            
-            {/* Bottom row */}
-            <div style={{...mirrorPanelStyle, top: '150px', left: '54px'}}></div>
-            <div style={{...mirrorPanelStyle, top: '150px', left: '118px'}}></div>
-            <div style={{...mirrorPanelStyle, top: '150px', left: '182px'}}></div>
-          </div>
-          
-          {/* Left Side Wall - transparent */}
-          <div style={leftWallStyle}></div>
-          
-          {/* Right Side Wall with steel left/right and 6 mirrors */}
-          <div style={rightWallStyle}>
-            {/* Left steel panel */}
-            <div style={{...rightSteelPanelStyle, left: '0px'}}></div>
-            
-            {/* Right steel panel */}
-            <div style={{...rightSteelPanelStyle, right: '0px'}}></div>
-            
-            {/* 6 mirrors in 3x2 grid */}
-            {/* Top row */}
-            <div style={{...rightMirrorPanelStyle, top: '0px', left: '54px'}}></div>
-            <div style={{...rightMirrorPanelStyle, top: '0px', left: '118px'}}></div>
-            <div style={{...rightMirrorPanelStyle, top: '0px', left: '182px'}}></div>
-            
-            {/* Bottom row */}
-            <div style={{...rightMirrorPanelStyle, top: '150px', left: '54px'}}></div>
-            <div style={{...rightMirrorPanelStyle, top: '150px', left: '118px'}}></div>
-            <div style={{...rightMirrorPanelStyle, top: '150px', left: '182px'}}></div>
-          </div>
-          
-          {/* Front Door Frames - transparent */}
-          <div style={frontLeftDoorFrameStyle}></div>
-          <div style={frontRightDoorFrameStyle}></div>
-          
-          {/* Floor */}
-          <div style={floorStyle}></div>
-        </div>
+    <div style={{ width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      {/* Title */}
+      <div style={titleStyle}>
+        3D Lift Interior
       </div>
 
-      {/* Floor Selection */}
-      <div style={selectorStyle}>
-        {floorOptions.map((floor) => (
-          <div
-            key={floor.id}
-            style={selectedFloor === floor.image ? selectedOptionStyle : optionStyle}
-            onClick={() => setSelectedFloor(floor.image)}
-          >
-            <div 
-              style={{
-                ...previewStyle,
-                backgroundImage: `url(${floor.image})`
-              }}
-            ></div>
-            <div style={{ fontSize: '12px', fontWeight: 'bold' }}>
-              {floor.name}
-            </div>
-          </div>
-        ))}
+      {/* Controls Info */}
+      <div style={infoStyle}>
+        <div><strong>Controls:</strong></div>
+        <div>🖱️ Drag: Rotate view</div>
+        <div>🔍 Scroll: Zoom</div>
+        <div>🎯 Right-click + drag: Pan</div>
       </div>
-      
-      <div style={{
-        textAlign: 'center',
-        marginTop: '15px',
-        color: 'white',
-        fontSize: '14px'
-      }}>
-        Click on a floor style to see it applied to the lift
-      </div>
+
+      {/* 3D Canvas */}
+      <Canvas
+        camera={{ 
+          position: [8, 6, 10], 
+          fov: 60 
+        }}
+      >
+        {/* Basic lighting */}
+        <ambientLight intensity={0.6} />
+        <directionalLight 
+          position={[5, 5, 5]} 
+          intensity={0.8} 
+        />
+        
+        {/* Lift Model */}
+        <LiftInterior />
+        
+        {/* Ground plane for reference */}
+        <Plane args={[20, 20]} position={[0, -6, 0]} rotation={[-Math.PI/2, 0, 0]}>
+          <meshStandardMaterial color="#444" transparent opacity={0.3} />
+        </Plane>
+        
+        {/* Orbit Controls */}
+        <OrbitControls
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          dampingFactor={0.1}
+          enableDamping={true}
+          minDistance={5}
+          maxDistance={25}
+          maxPolarAngle={Math.PI * 0.75}
+          target={[0, 0, 0]}
+        />
+      </Canvas>
     </div>
   );
-};
-
-export default Mockup;
+}
