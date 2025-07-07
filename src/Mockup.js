@@ -9,7 +9,7 @@ function LiftInterior() {
   
   // Load textures
   const floorTexture = useLoader(THREE.TextureLoader, '/assets/floor/awfgazdg.jpeg');
-  const mirrorTexture = useLoader(THREE.TextureLoader, '/assets/mirror/mirror-2.jpg');
+  const mirrorTexture = useLoader(THREE.TextureLoader, '/assets/mirror/mirror.jpeg');
   const sideTexture = useLoader(THREE.TextureLoader, '/assets/side/side-1.jpg');
   
   // Configure texture properties
@@ -47,62 +47,29 @@ function LiftInterior() {
       {/* Ceiling (same texture as floor) */}
       <Box args={[6, 0.1, 6]} position={[0, 2.95, 0]} material={floorMaterial} />
 
-      {/* Back Wall */}
+      {/* Back Wall - Side texture with mirrors */}
       <group position={[0, 0, -3]}>
-        {/* Steel side panels */}
-        <Box args={[1, 6, 0.1]} position={[-2.5, 0, 0]} material={sideMaterial} />
-        <Box args={[1, 6, 0.1]} position={[2.5, 0, 0]} material={sideMaterial} />
+        {/* Full back wall with side texture */}
+        <Box args={[6, 6, 0.1]} position={[0, 0, 0]} material={sideMaterial} />
         
-        {/* Mirror panels in 3x2 grid */}
-        {[-1.5, -0.5, 0.5, 1.5].map((x, i) => 
-          [1, -1].map((y, j) => (
+        {/* Mirror panels overlaid on top - no spaces */}
+        {[-1.35, -0.45, 0.45, 1.35].map((x, i) => 
+          [1.4, -1.4].map((y, j) => (
             <Box 
               key={`back-mirror-${i}-${j}`}
               args={[0.9, 2.8, 0.05]} 
-              position={[x, y * 1.4, 0.05]} 
+              position={[x, y, 0.06]} 
               material={mirrorMaterial}
             />
           ))
         )}
       </group>
 
-      {/* Right Wall */}
-      <group position={[3, 0, 0]} rotation={[0, -Math.PI/2, 0]}>
-        {/* Steel side panels */}
-        <Box args={[1, 6, 0.1]} position={[-2.5, 0, 0]} material={sideMaterial} />
-        <Box args={[1, 6, 0.1]} position={[2.5, 0, 0]} material={sideMaterial} />
-        
-        {/* Mirror panels */}
-        {[-1.5, -0.5, 0.5, 1.5].map((x, i) => 
-          [1, -1].map((y, j) => (
-            <Box 
-              key={`right-mirror-${i}-${j}`}
-              args={[0.9, 2.8, 0.05]} 
-              position={[x, y * 1.4, 0.05]} 
-              material={mirrorMaterial}
-            />
-          ))
-        )}
-      </group>
+      {/* Right Wall - Full side texture */}
+      <Box args={[6, 6, 0.1]} position={[3, 0, 0]} rotation={[0, -Math.PI/2, 0]} material={sideMaterial} />
 
-      {/* Left Wall */}
-      <group position={[-3, 0, 0]} rotation={[0, Math.PI/2, 0]}>
-        {/* Steel side panels */}
-        <Box args={[1, 6, 0.1]} position={[-2.5, 0, 0]} material={sideMaterial} />
-        <Box args={[1, 6, 0.1]} position={[2.5, 0, 0]} material={sideMaterial} />
-        
-        {/* Mirror panels */}
-        {[-1.5, -0.5, 0.5, 1.5].map((x, i) => 
-          [1, -1].map((y, j) => (
-            <Box 
-              key={`left-mirror-${i}-${j}`}
-              args={[0.9, 2.8, 0.05]} 
-              position={[x, y * 1.4, 0.05]} 
-              material={mirrorMaterial}
-            />
-          ))
-        )}
-      </group>
+      {/* Left Wall - Full side texture */}
+      <Box args={[6, 6, 0.1]} position={[-3, 0, 0]} rotation={[0, Math.PI/2, 0]} material={sideMaterial} />
 
       {/* Front Wall - Open (door opening) */}
       <group position={[0, 0, 3]}>
